@@ -8,7 +8,7 @@ namespace Demo
 		{
 			InitializeComponent();
 
-			MainPage = new DemoPage();
+			MainPage = new StrikeZonePage();
 		}
 
 		protected override void OnStart()
