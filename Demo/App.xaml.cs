@@ -8,8 +8,12 @@ namespace Demo
 		{
 			InitializeComponent();
 
-			MainPage = new StrikeZonePage();
+			//MainPage = new StrikeZonePage();
+			MainPage = new StartPage();
 		}
+
+		static public int ScreenWidth { get; set; }
+		static public int ScreenHeight { get; set; }
 
 		protected override void OnStart()
 		{
