@@ -22,6 +22,9 @@ namespace Demo.Droid
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
 
+			App.ScreenWidth = (int)(Resources.DisplayMetrics.WidthPixels / Resources.DisplayMetrics.Density);
+			App.ScreenHeight = (int)(Resources.DisplayMetrics.HeightPixels / Resources.DisplayMetrics.Density);
+
 			LoadApplication(new App());
 		}
 	}

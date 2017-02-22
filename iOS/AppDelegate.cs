@@ -16,6 +16,9 @@ namespace Demo.iOS
 
 			LoadApplication(new App());
 
+			App.ScreenWidth = (int)UIScreen.MainScreen.Bounds.Width;
+			App.ScreenHeight = (int)UIScreen.MainScreen.Bounds.Height;
+
 			return base.FinishedLaunching(app, options);
 		}
 	}
