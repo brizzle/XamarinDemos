@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace Demo
 {
@@ -11,38 +12,39 @@ namespace Demo
 			InitializeComponent();
 
 			this.Content = CreateContent();
+
+			_swipeGesture = new PanGestureRecognizer();
+
+			_swipeGesture.PanUpdated += OnSwipeUpdated;
+
+			Content.GestureRecognizers.Add(_swipeGesture);
 		}
+
+		private Grid _grid { get; set; }
+
+		private PanGestureRecognizer _swipeGesture { get; set; }
 
 		private View CreateContent()
 		{
-			var grid = new Grid
+			_grid = new Grid
 			{
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
 
-			var tempX = App.ScreenHeight - grid.Bounds.Location.X;
-			var tempY = App.ScreenWidth - grid.Bounds.Location.Y;
+			_grid.Children.Add(CreateZone("1", Color.Black), 0, 0);
+			_grid.Children.Add(CreateZone("2", Color.Black), 1, 0);
+			_grid.Children.Add(CreateZone("3", Color.Black), 2, 0);
+			_grid.Children.Add(CreateZone("4", Color.Black), 0, 1, 1, 2);
+			_grid.Children.Add(CreateZone("5", Color.Black), 1, 2, 1, 2);
+			_grid.Children.Add(CreateZone("6", Color.Black), 2, 3, 1, 2);
+			_grid.Children.Add(CreateZone("7", Color.Black), 0, 1, 2, 3);
+			_grid.Children.Add(CreateZone("8", Color.Black), 1, 2, 2, 3);
 
-			grid.Children.Add(CreateZone("1", Color.Black), 0, 0);
-			grid.Children.Add(CreateZone("2", Color.Black), 1, 0);
-			grid.Children.Add(CreateZone("3", Color.Black), 2, 0);
-			grid.Children.Add(CreateZone("4", Color.Black), 0, 1, 1, 2);
-			grid.Children.Add(CreateZone("5", Color.Black), 1, 2, 1, 2);
-			grid.Children.Add(CreateZone("6", Color.Black), 2, 3, 1, 2);
-			grid.Children.Add(CreateZone("7", Color.Black), 0, 1, 2, 3);
-			grid.Children.Add(CreateZone("8", Color.Black), 1, 2, 2, 3);
-			grid.Children.Add(CreateZone("9", Color.Black), 2, 3, 2, 3);
+			var zone = CreateZone("9", Color.Black);
+			_grid.Children.Add(zone, 2, 3, 2, 3);
 
-			AbsoluteLayout layout = new AbsoluteLayout();
-
-
-			grid.Children.Add(CreateZone(App.ScreenHeight.ToString(), Color.Black), 0, 1, 3, 4);
-			grid.Children.Add(CreateZone(layout.Bounds.Y.ToString(), Color.Black), 1, 2, 3, 4);
-
-			layout.Children.Add(grid);
-
-			return layout;
+			return _grid;
 		}
 
 		private View CreateZone(string btnText,
@@ -63,11 +65,65 @@ namespace Demo
 			return zoneButton;
 		}
 
-		void OnButtonClicked(object sender, EventArgs e)
+		public delegate void Action();
+
+		private async void OnButtonClicked(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
 
 			btn.BackgroundColor = Color.Red;
+
+			await Sleep(2000, btn);
+		}
+
+		public async Task Sleep(int ms, Button btn)
+		{
+			await Task.Delay(ms);
+
+			btn.BackgroundColor = Color.Blue;
+
+			await Task.Delay(ms);
+
+			btn.BackgroundColor = Color.Black;
+		}
+
+		void OnCallBack(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+
+			btn.BackgroundColor = Color.Black;
+		}
+
+		void OnSwipeUpdated(object sender, PanUpdatedEventArgs e)
+		{
+			switch (e.StatusType)
+			{
+				case GestureStatus.Started:
+					HandleVerticalTouchStart(e);
+					break;
+				case GestureStatus.Running:
+					HandleVerticalTouch((float)e.TotalY);
+					break;
+				case GestureStatus.Completed:
+					HandleVerticalTouchEnd();
+					break;
+			}
+		}
+
+		private void HandleVerticalTouchStart(PanUpdatedEventArgs e)
+		{
+			var horizontal = e.TotalX;
+			var vertical = e.TotalY;
+		}
+
+		private void HandleVerticalTouch(double verticalLength)
+		{
+			
+		}
+
+		private void HandleVerticalTouchEnd()
+		{
+
 		}
 	}
 }
