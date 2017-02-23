@@ -10,7 +10,8 @@ namespace Demo
 		{
 			InitializeComponent();
 
-			this.Content = StartView;
+			//this.Content = StartView;
+			this.Content = new StrikeZoneGridView();
 		}
 
 		private View _startView;
