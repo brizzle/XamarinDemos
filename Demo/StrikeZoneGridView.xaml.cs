@@ -24,6 +24,8 @@ namespace Demo
 
 		private PanGestureRecognizer _swipeGesture { get; set; }
 
+		private AbsoluteLayout _absolute { get; set; }
+
 		private View CreateContent()
 		{
 			_grid = new Grid
@@ -44,7 +46,22 @@ namespace Demo
 			var zone = CreateZone("9", Color.Black);
 			_grid.Children.Add(zone, 2, 3, 2, 3);
 
-			return _grid;
+			_absolute = new AbsoluteLayout();
+
+			var bounds = _absolute.Bounds;
+
+			_absolute.Children.Add(_grid);
+
+			var label = new Label
+			{
+				Text = "View # 2",
+				TextColor = Color.Red,
+				BackgroundColor = Color.Gray
+			};
+
+			_absolute.Children.Add(label);
+
+			return _absolute;
 		}
 
 		private View CreateZone(string btnText,
@@ -116,9 +133,24 @@ namespace Demo
 			var vertical = e.TotalY;
 		}
 
-		private void HandleVerticalTouch(double verticalLength)
+		private async void HandleVerticalTouch(double verticalLength)
 		{
-			
+			//var bounds = _absolute.Bounds;
+
+			var moved = _grid.Bounds.Y + verticalLength;
+
+			if (moved <= _absolute.Bounds.Y)
+			{
+				moved = _absolute.Bounds.Y;
+			}
+			//else if (moved >= _absolute.Bounds.Bottom)
+			//{
+			//	moved = _absolute.Bounds.Bottom;
+			//}
+
+			var rect = new Rectangle(0, moved, _grid.Bounds.Width, _grid.Bounds.Height);
+
+			await _grid.LayoutTo(rect, 250, Easing.BounceIn);
 		}
 
 		private void HandleVerticalTouchEnd()
